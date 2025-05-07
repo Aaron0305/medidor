@@ -1,0 +1,46 @@
+/* src/components/Dashboard/Timer.css */
+.timer-container {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .timer-display {
+    font-size: 3rem;
+    font-family: monospace;
+    margin: 20px 0;
+    color: #2c7be5;
+  }
+  
+  .timer-status {
+    margin: 15px 0;
+    font-weight: 500;
+  }
+  
+  .connected {
+    color: #00a854;
+  }
+  
+  .disconnected {
+    color: #e63757;
+  }
+  
+  .timer-controls button {
+    background-color: #2c7be5;
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    margin: 0 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .timer-controls button:hover {
+    background-color: #1a68d1;
+  }
+  
+  .timer-controls button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+  }
