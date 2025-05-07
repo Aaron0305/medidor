@@ -1,40 +1,32 @@
-// services/auth.js
-const mockUsers = [
-    {
-      id: 1,
-      name: "Juan Pérez",
-      email: "juan@example.com",
-      studentId: "A01234567",
-      password: "password123"
-    }
-  ];
-  
-  export const auth = {
-    async login(email, password) {
-      // Simular llamada a API
-      return new Promise((resolve, reject) => {
+export const auth = {
+    onAuthStateChanged: (callback) => {
+      const user = JSON.parse(localStorage.getItem('user')) || null;
+      callback(user);
+      return () => {};
+    },
+    login: (email, password) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
-          const user = mockUsers.find(u => u.email === email && u.password === password);
-          if (user) {
-            resolve({ ...user, password: undefined });
-          } else {
-            reject(new Error('Credenciales incorrectas'));
-          }
+          const user = { uid: '123', email };
+          localStorage.setItem('user', JSON.stringify(user));
+          resolve(user);
         }, 500);
       });
     },
-  
-    async register(studentData) {
-      // Simular llamada a API
+    register: (email, password, studentData) => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          const newUser = {
-            id: mockUsers.length + 1,
-            ...studentData,
-            password: undefined
-          };
-          mockUsers.push({ ...studentData });
-          resolve(newUser);
+          const user = { uid: Date.now().toString(), email, ...studentData };
+          localStorage.setItem('user', JSON.stringify(user));
+          resolve(user);
+        }, 500);
+      });
+    },
+    logout: () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          localStorage.removeItem('user');
+          resolve();
         }, 500);
       });
     }

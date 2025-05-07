@@ -1,29 +1,101 @@
-import React, { useContext } from 'react';
-import { TimerContext } from '../../context/TimerContext';
+import React, { useState, useEffect, useContext } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Grid, 
+  CircularProgress,
+  Divider
+} from '@mui/material';
+import { AuthContext } from '../../contexts/AuthContext';
+import { getSummary } from '../../services/hours';
 
-const Summary = () => {
-  const { totalHours, history } = useContext(TimerContext);
-  const totalDays = Math.floor(totalHours / 8); // Asumiendo 8 horas por día
+export default function Summary() {
+  const { currentUser } = useContext(AuthContext);
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const data = await getSummary(currentUser.uid);
+        setSummary(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSummary();
+  }, [currentUser]);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="summary-container">
-      <h2>Resumen de Horas</h2>
-      <div className="summary-stats">
-        <div className="stat-item">
-          <h3>Total Horas</h3>
-          <p>{totalHours.toFixed(2)} horas</p>
-        </div>
-        <div className="stat-item">
-          <h3>Total Días</h3>
-          <p>{totalDays} días</p>
-        </div>
-        <div className="stat-item">
-          <h3>Sesiones</h3>
-          <p>{history.length} registros</p>
-        </div>
-      </div>
-    </div>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Resumen de Horas
+      </Typography>
+      
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                Total de Horas
+              </Typography>
+              <Typography variant="h3">
+                {summary.totalHours.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                Días de Servicio
+              </Typography>
+              <Typography variant="h3">
+                {summary.totalDays}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                Promedio por Día
+              </Typography>
+              <Typography variant="h3">
+                {summary.averageHoursPerDay.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      
+      <Divider sx={{ my: 4 }} />
+      
+      <Typography variant="h5" gutterBottom>
+        Progreso
+      </Typography>
+      <Box sx={{ width: '100%', bgcolor: 'background.paper', p: 2, borderRadius: 1 }}>
+        <Typography variant="body1">
+          Aquí podrías incluir un gráfico de progreso (usando Chart.js o similar)
+        </Typography>
+      </Box>
+    </Box>
   );
-};
-
-export default Summary;
+}

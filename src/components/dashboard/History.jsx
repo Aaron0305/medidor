@@ -1,44 +1,75 @@
-import React, { useContext } from 'react';
-import { TimerContext } from '../../context/TimerContext';
+import React, { useState, useEffect, useContext } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper,
+  CircularProgress
+} from '@mui/material';
+import { AuthContext } from '../../contexts/AuthContext';
+import { getHistory } from '../../services/hours';
 
-const formatDuration = (seconds) => {
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  return `${hrs}h ${mins}m`;
-};
+export default function History() {
+  const { currentUser } = useContext(AuthContext);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const History = () => {
-  const { history } = useContext(TimerContext);
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const data = await getHistory(currentUser.uid);
+        setHistory(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, [currentUser]);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="history-container">
-      <h2>Historial de Servicio</h2>
-      {history.length === 0 ? (
-        <p>No hay registros de horas aún.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Hora Inicio</th>
-              <th>Hora Fin</th>
-              <th>Duración</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((session, index) => (
-              <tr key={index}>
-                <td>{new Date(session.startTime).toLocaleDateString()}</td>
-                <td>{new Date(session.startTime).toLocaleTimeString()}</td>
-                <td>{new Date(session.endTime).toLocaleTimeString()}</td>
-                <td>{formatDuration(session.duration)}</td>
-              </tr>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Historial de Horas
+      </Typography>
+      
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Fecha</TableCell>
+              <TableCell align="right">Horas</TableCell>
+              <TableCell>Inicio</TableCell>
+              <TableCell>Fin</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {history.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.date}</TableCell>
+                <TableCell align="right">{item.hours.toFixed(2)}</TableCell>
+                <TableCell>{new Date(item.startTime).toLocaleTimeString()}</TableCell>
+                <TableCell>{new Date(item.endTime).toLocaleTimeString()}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
-};
-
-export default History;
+}

@@ -1,92 +1,83 @@
-import { useState, useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { AuthContext } from '../../context/AuthContext'
-import {
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Box,
-  InputAdornment,
-} from '@mui/material'
-import { Email, Lock } from '@mui/icons-material'
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
+import { 
+  TextField, 
+  Button, 
+  Typography, 
+  Container, 
+  Paper, 
+  Box, 
+  Grid,
+  Alert
+} from '@mui/material';
 
-const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const { login } = useContext(AuthContext)
-  const navigate = useNavigate()
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await login(email, password)
-      navigate('/')
+      await login(email, password);
     } catch (err) {
-      setError('Credenciales incorrectas')
+      setError('Usuario o contraseña incorrectos');
     }
-  }
+  };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-      
-      <TextField
-        fullWidth
-        margin="normal"
-        label="Correo electrónico"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Email />
-            </InputAdornment>
-          ),
-        }}
-      />
-      
-      <TextField
-        fullWidth
-        margin="normal"
-        label="Contraseña"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Lock />
-            </InputAdornment>
-          ),
-        }}
-      />
-      
-      <Button
-        fullWidth
-        type="submit"
-        variant="contained"
-        sx={{ mt: 3, mb: 2, py: 1.5 }}
-      >
-        Ingresar
-      </Button>
-      
-      <Typography align="center">
-        ¿No tienes cuenta?{' '}
-        <Link to="/auth/register" style={{ textDecoration: 'none' }}>
-          Regístrate aquí
-        </Link>
-      </Typography>
-    </Box>
-  )
+    <Container maxWidth="xs">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Iniciar Sesión
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            label="Correo Electrónico"
+            type="email"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Ingresar
+          </Button>
+        </Box>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Link to="/register" style={{ textDecoration: 'none' }}>
+              <Button color="secondary">¿No tienes cuenta? Regístrate</Button>
+            </Link>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Container>
+  );
 }
-
-export default Login

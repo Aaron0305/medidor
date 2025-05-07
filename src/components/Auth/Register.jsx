@@ -1,133 +1,118 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import './Auth.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
+import { 
+  TextField, 
+  Button, 
+  Typography, 
+  Container, 
+  Paper, 
+  Box, 
+  Alert
+} from '@mui/material';
 
-const Register = () => {
-  const [studentData, setStudentData] = useState({
-    name: '',
-    email: '',
-    studentId: '',
-    password: '',
-    confirmPassword: ''
-  });
+export default function Register() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [studentId, setStudentId] = useState('');
+  const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setStudentData({
-      ...studentData,
-      [name]: value
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
-    if (studentData.password !== studentData.confirmPassword) {
+    if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-
-    if (studentData.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
-      return;
-    }
-
-    setIsSubmitting(true);
-    
     try {
-      await register({
-        name: studentData.name,
-        email: studentData.email,
-        studentId: studentData.studentId,
-        password: studentData.password
+      await register(email, password, {
+        studentId,
+        fullName
       });
-      navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Error al registrar. Intenta nuevamente.');
-    } finally {
-      setIsSubmitting(false);
+      setError('Error al registrar el usuario');
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Registro de Alumno</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre Completo:</label>
-          <input
-            type="text"
-            name="name"
-            value={studentData.name}
-            onChange={handleChange}
+    <Container maxWidth="xs">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Registro de Alumno
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            label="Nombre Completo"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             required
-            placeholder="Ej. Juan Pérez López"
           />
-        </div>
-        <div>
-          <label>Matrícula:</label>
-          <input
-            type="text"
-            name="studentId"
-            value={studentData.studentId}
-            onChange={handleChange}
+          <TextField
+            label="Matrícula"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
             required
-            placeholder="Ej. A01234567"
           />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
+          <TextField
+            label="Correo Electrónico"
             type="email"
-            name="email"
-            value={studentData.email}
-            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="Ej. alumno@dominio.com"
           />
-        </div>
-        <div>
-          <label>Contraseña:</label>
-          <input
+          <TextField
+            label="Contraseña"
             type="password"
-            name="password"
-            value={studentData.password}
-            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Mínimo 6 caracteres"
           />
-        </div>
-        <div>
-          <label>Confirmar Contraseña:</label>
-          <input
+          <TextField
+            label="Confirmar Contraseña"
             type="password"
-            name="confirmPassword"
-            value={studentData.confirmPassword}
-            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            placeholder="Repite tu contraseña"
           />
-        </div>
-        <button 
-          type="submit" 
-          disabled={isSubmitting}
-          className={isSubmitting ? 'submitting' : ''}
-        >
-          {isSubmitting ? 'Registrando...' : 'Registrarse'}
-        </button>
-      </form>
-      <p className="auth-link">
-        ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
-      </p>
-    </div>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Registrarse
+          </Button>
+        </Box>
+        <Box textAlign="center">
+          <Link to="/login" style={{ textDecoration: 'none' }}>
+            <Button color="secondary">¿Ya tienes cuenta? Inicia Sesión</Button>
+          </Link>
+        </Box>
+      </Paper>
+    </Container>
   );
-};
-
-export default Register;
+}
