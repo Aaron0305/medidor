@@ -9,7 +9,7 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ActiveSession from './components/Dashboard/ActiveSession';
 import History from './components/Dashboard/History';
-import Summary from './components/Dashboard/Summary';
+import Summary from './components/dashboard/Summary';
 
 // Configuración del tema de Material-UI
 const theme = createTheme({

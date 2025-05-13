@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import {
@@ -8,12 +8,9 @@ import {
   Container,
   Paper,
   Box,
-  Grid,
   Alert,
   InputAdornment,
   IconButton,
-  Divider,
-  Snackbar,
   CircularProgress,
   ThemeProvider,
   createTheme,
@@ -26,29 +23,25 @@ import {
   VisibilityOff,
   Email,
   Lock,
-  Google,
-  Facebook,
-  Apple,
   KeyboardArrowRight
 } from '@mui/icons-material';
-import { motion } from 'framer-motion';
 
 // Paleta de colores personalizada
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#004e60',      // Azul oscuro principal
-      light: '#4f99db',     // Azul claro
-      dark: '#003847',      // Azul más profundo
+      main: '#0853be',      // Azul principal solicitado
+      light: '#3675d6',     // Versión más clara
+      dark: '#063d8f',      // Versión más oscura
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#2077d8',      // Azul complementario (corregido)
-      light: '#5da0f0',     // Versión más clara
+      main: '#0853be',      // Usando el mismo color como secundario para consistencia
+      light: '#3675d6',     // Versión más clara
       contrastText: '#ffffff',
     },
     background: {
-      default: '#e3f2fd',   // Fondo claro suave
+      default: '#e6f0ff',   // Fondo claro con tono azulado suave
       paper: '#ffffff',     // Fondo de tarjetas o formularios
     },
   },
@@ -157,33 +150,6 @@ export default function Login() {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    // Implementar funcionalidad de inicio de sesión social
-    console.log(`Login with ${provider}`);
-  };
-
-  // Estilos de animación para elementos
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        duration: 0.5,
-        when: "beforeChildren",
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <Container 
@@ -213,13 +179,13 @@ export default function Login() {
                 left: 0,
                 width: '100%',
                 height: '5px',
-                background: `linear-gradient(90deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.main} 100%)`,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
               }
             }}
           >
             <Box sx={{ 
               p: 4, 
-              bgcolor: theme.palette.primary.dark, 
+              bgcolor: theme.palette.primary.main, 
               color: 'white',
               textAlign: 'center',
               position: 'relative',
@@ -394,84 +360,6 @@ export default function Login() {
                   )}
                 </Button>
               </Zoom>
-
-              <Fade in={true} style={{ transitionDelay: '700ms' }}>
-                <Box sx={{ my: 3, display: 'flex', alignItems: 'center' }}>
-                  <Divider sx={{ flexGrow: 1, borderColor: 'rgba(0,0,0,0.1)' }} />
-                  <Typography variant="body2" color="text.secondary" sx={{ px: 2 }}>
-                    O continúa con
-                  </Typography>
-                  <Divider sx={{ flexGrow: 1, borderColor: 'rgba(0,0,0,0.1)' }} />
-                </Box>
-              </Fade>
-
-              <Fade in={true} style={{ transitionDelay: '800ms' }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4}>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      startIcon={<Google />}
-                      onClick={() => handleSocialLogin('Google')}
-                      sx={{ 
-                        py: 1,
-                        borderColor: 'rgba(0,0,0,0.1)',
-                        color: theme.palette.text.primary,
-                        '&:hover': {
-                          borderColor: theme.palette.primary.light,
-                          backgroundColor: 'rgba(0,121,139,0.05)',
-                          transform: 'translateY(-2px)',
-                          transition: 'all 0.3s ease'
-                        }
-                      }}
-                    >
-                      Google
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      startIcon={<Facebook />}
-                      onClick={() => handleSocialLogin('Facebook')}
-                      sx={{ 
-                        py: 1,
-                        borderColor: 'rgba(0,0,0,0.1)',
-                        color: theme.palette.text.primary,
-                        '&:hover': {
-                          borderColor: theme.palette.primary.light,
-                          backgroundColor: 'rgba(0,121,139,0.05)',
-                          transform: 'translateY(-2px)',
-                          transition: 'all 0.3s ease'
-                        }
-                      }}
-                    >
-                      Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      startIcon={<Apple />}
-                      onClick={() => handleSocialLogin('Apple')}
-                      sx={{ 
-                        py: 1,
-                        borderColor: 'rgba(0,0,0,0.1)',
-                        color: theme.palette.text.primary,
-                        '&:hover': {
-                          borderColor: theme.palette.primary.light,
-                          backgroundColor: 'rgba(0,121,139,0.05)',
-                          transform: 'translateY(-2px)',
-                          transition: 'all 0.3s ease'
-                        }
-                      }}
-                    >
-                      Apple
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Fade>
 
               <Fade in={true} style={{ transitionDelay: '900ms' }}>
                 <Box sx={{ textAlign: 'center', mt: 4 }}>
